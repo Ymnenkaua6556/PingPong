@@ -98,5 +98,36 @@ while run:
         points2 = font2.render(str(point2), 1, (180, 0, 0))
         window.blit(points2, (340, 30))
 
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+
+        if ball.rect.y > 450 or ball.rect.y < 0:
+            speed_y *= -1
+
+        if pygame.sprite.collide_rect(ball, player1) or pygame.sprite.collide_rect(ball, player2):
+            speed_x *= -1
+            speed_y *= 1
+
+        if ball.rect.x >= 440:
+            point1 += 1
+            ball.rect.x = 260
+            ball.rect.y = 220
+            wait_time = my_time.time()
+        
+        if ball.rect.x <= 5:
+            point2 += 1
+            ball.rect.x = 260
+            ball.rect.y = 220
+            wait_time = my_time.time()
+
+
+        if point1 == 5:
+            window.blit(lose2, (150, 200))
+            finish = True
+
+        if point2 == 5:
+            window.blit(lose1, (150, 200))
+            finish = True     
+
         pygame.display.update()
     pygame.time.delay(60)
