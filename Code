@@ -1,4 +1,6 @@
 import pygame
+from random import randint
+import time as my_time
 import os, sys
 
 pygame.init()
@@ -7,10 +9,50 @@ app_folder = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 blue = (180, 220, 254)
 
+player_img = os.path.join(app_folder,"racket.png")
+ball_img = os.path.join(app_folder, "tennis_ball.png")
+
+class GameSprite(pygame.sprite.Sprite):
+    def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.transform.scale(pygame.image.load(player_image), (size_x, size_y))
+        self.speed = player_speed
+
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+ 
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+class Player(GameSprite):
+    def update_left(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and self.rect.y >= 5:
+            self.rect.y -= self.speed
+        if keys[pygame.K_s] and self.rect.y <= 300:
+            self.rect.y += self.speed
+
+    def update_right(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] and self.rect.y >= 5:
+            self.rect.y -= self.speed
+        if keys[pygame.K_DOWN] and self.rect.y <= 300:
+            self.rect.y += self.speed
+
 win_width = 500
 win_height = 500
 pygame.display.set_caption("PingPong")
 window = pygame.display.set_mode((win_width, win_height))
+
+
+player1 = Player(player_img, 10, 160, 30, 170, 10)
+player2 = Player(player_img, 460, 160, 30, 170, 10)
+ball = Player(ball_img, 260, 220, 50, 50, 5)
+
+speed_x = 5
+speed_y = 5
 
 run = True
 finish = False
@@ -22,6 +64,14 @@ while run:
 
     if not finish:
         window.fill(blue)
+
+        ball.reset()
+        ball.update()
+
+        player1.reset()
+        player1.update_left()
+        player2.reset()
+        player2.update_right()  
 
         pygame.display.update()
     pygame.time.delay(60)
